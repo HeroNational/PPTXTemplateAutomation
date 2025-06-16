@@ -1,0 +1,50 @@
+# Dossiers générés
+bin/
+obj/
+generated_*_pdf/
+generated_*_pptx/
+
+# Fichiers de build
+*.exe
+*.dll
+*.pdb
+*.cache
+
+# Fichiers Visual Studio
+.vs/
+*.user
+*.userosscache
+*.sln.docstates
+*.suo
+
+# Fichiers temporaires
+*~
+*.swp
+*.bak
+
+# Fichiers de données et templates
+#data.csv
+#template.pptx
+
+# Packages NuGet
+*.nupkg
+packages/
+
+# Fichiers de logs
+*.log
+
+# Fichiers système Windows
+Thumbs.db
+Desktop.ini
+
+# Fichiers LibreOffice temporaires
+.~lock.*
+
+# Fichiers d'environnement
+*.env
+appsettings.*.json
+
+# Fichiers de couverture de code
+coverage/
+*.coverage
+.coverage
