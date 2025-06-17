@@ -48,3 +48,6 @@ appsettings.*.json
 coverage/
 *.coverage
 .coverage
+template.pptx
+data.csv
+template.pptx
