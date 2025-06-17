@@ -23,8 +23,8 @@ generated_*_pptx/
 *.bak
 
 # Fichiers de données et templates
-#data.csv
-#template.pptx
+*.csv
+*.pptx
 
 # Packages NuGet
 *.nupkg

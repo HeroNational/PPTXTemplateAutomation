@@ -1,13 +1,15 @@
 ﻿using System;
-using System.IO; // Explicitly use System.IO for Path operations
+using System.IO;
 using System.Linq;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Presentation;
-using DocumentFormat.OpenXml.Drawing; // For Text, Paragraph, Run (used below for shapes)
-using System.Collections.Generic; // For List<Dictionary<string, string>>
-using CsvHelper; // For CSV parsing
-using System.Globalization; // For CultureInfo.InvariantCulture
-using System.Diagnostics; // For Process operations
+using DocumentFormat.OpenXml.Drawing;
+using System.Collections.Generic;
+using CsvHelper;
+using System.Globalization;
+using System.Diagnostics;
+using System.Text;
+using static System.Text.Encoding; // Correction: Utilisez 'using static' pour la classe Encoding
 
 namespace PptxSimpleGenerator
 {
@@ -24,6 +26,12 @@ namespace PptxSimpleGenerator
 
         static void Main(string[] args)
         {
+            // ***********************************************************************************
+            // CORRECTION PRINCIPALE 2 : Enregistrez le fournisseur d'encodage pour les pages de code
+            // Ceci est nécessaire dans .NET Core pour supporter des encodages comme "Windows-1252".
+            // ***********************************************************************************
+            RegisterProvider(CodePagesEncodingProvider.Instance); // Pas besoin de préfixer 'Encoding.' grâce à 'using static'
+
             Console.WriteLine("Démarrage du script de génération de présentation PPTX et PDF.");
 
             // --- Configuration ---
@@ -32,7 +40,7 @@ namespace PptxSimpleGenerator
             // of this program, or adjust the path.
             string templatePptxPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "template.pptx");
             //Category of certifcate
-            const string CATEGORY_CERT = "Orga";
+            const string CATEGORY_CERT = "Enfants_Dakar";
 
 
             // Path to your CSV data file
@@ -56,7 +64,7 @@ namespace PptxSimpleGenerator
             Dictionary<string, string> tagToCsvHeaderMapping = new Dictionary<string, string>
             {
                 { "[[VOTRE_BALISE]]", "NOM_COMPLET" },
-                { "[[SUJET]]", "AUTRE" },
+                //{ "[[SUJET]]", "AUTRE" },
                 // Add other mappings here based on your tags and CSV headers
                 // Example: { "[[OTHER_TAG]]", "OTHER_CSV_HEADER" },
             };
@@ -90,7 +98,6 @@ namespace PptxSimpleGenerator
                 {
                     Console.WriteLine($"Fatal Error : Unable to create output folder : {outputPptxFolder}");
                     Console.WriteLine($"Error details : {ex.Message}");
-                    Console.WriteLine("Please check write permissions.");
                     Console.ReadKey();
                     return;
                 }
@@ -107,7 +114,6 @@ namespace PptxSimpleGenerator
                 {
                     Console.WriteLine($"Fatal Error : Unable to create PDF output folder : {outputPdfFolder}");
                     Console.WriteLine($"Error details : {ex.Message}");
-                    Console.WriteLine("Please check write permissions.");
                     Console.ReadKey();
                     return;
                 }
@@ -119,11 +125,11 @@ namespace PptxSimpleGenerator
             List<Dictionary<string, string>> csvData = new List<Dictionary<string, string>>();
             try
             {
-                using (var reader = new StreamReader(csvDataPath))
+                using (var reader = new StreamReader(csvDataPath, GetEncoding("Windows-1252")))
                 using (var csv = new CsvHelper.CsvReader(reader, CultureInfo.InvariantCulture))
                 {
                     csv.Read();
-                    csv.ReadHeader(); // Reads the first line as headers
+                    csv.ReadHeader();
 
                     Console.WriteLine("CSV headers detected : " + string.Join(", ", csv.HeaderRecord.Select(h => h ?? string.Empty)));
 
